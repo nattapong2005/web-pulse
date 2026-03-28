@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 interface HistoryItem {
   id: string;
@@ -52,10 +53,19 @@ export default function HistoryPage() {
     }
   }
 
-  const handleDelete = async (id: string, e: React.MouseEvent) => {
+  const confirmDelete = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบประวัตินี้?')) return;
+    toast("คุณแน่ใจหรือไม่ว่าต้องการลบประวัตินี้?", {
+      action: {
+        label: "ลบข้อมูล",
+        onClick: () => deleteItem(id),
+      },
+      duration: 5000,
+      description: "การกระทำนี้ไม่สามารถย้อนคืนได้"
+    });
+  };
 
+  const deleteItem = async (id: string) => {
     setIsDeleting(id);
     try {
       const { error } = await supabase
@@ -66,8 +76,9 @@ export default function HistoryPage() {
       if (error) throw error;
       setHistory(prev => prev.filter(item => item.id !== id));
       if (expandedId === id) setExpandedId(null);
+      toast.success('ลบข้อมูลเรียบร้อยแล้ว');
     } catch (err) {
-      alert('ไม่สามารถลบข้อมูลได้ กรุณาลองใหม่');
+      toast.error('ไม่สามารถลบข้อมูลได้ กรุณาลองใหม่');
     } finally {
       setIsDeleting(null);
     }
@@ -228,7 +239,7 @@ export default function HistoryPage() {
                       </div>
                       <div className="ml-2 pl-2 border-l border-border flex items-center gap-2 text-muted-foreground">
                         <button
-                          onClick={(e) => handleDelete(item.id, e)}
+                          onClick={(e) => confirmDelete(item.id, e)}
                           disabled={isDeleting === item.id}
                           className="p-2 hover:bg-rose-500/10 hover:text-rose-500 rounded-lg transition-all"
                         >
