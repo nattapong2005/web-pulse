@@ -1,3 +1,4 @@
+import React, { Suspense } from "react";
 import Analyzer from "@/components/Analyzer";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -31,7 +32,16 @@ export default function Home() {
         <div className="absolute inset-0 z-[-1] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgeD0iMCIgeT0iMCI+PHBhdGggZmlsbD0idHJhbnNwYXJlbnQiIGQ9Ik0wLDBIMjRWMjRIMEoiLz48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxIiBmaWxsPSIjOTNhM2FmIiBvcGFjaXR5PSIwLjMiLz48L3N2Zz4=')] opacity-50 dark:opacity-20 mask-[radial-gradient(ellipse_at_center,black,transparent)]" />
         
         <div className="py-16 md:py-24">
-          <Analyzer />
+          <Suspense fallback={
+            <div className="w-full max-w-5xl mx-auto px-6 h-64 flex items-center justify-center">
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                <p className="text-sm text-muted-foreground animate-pulse">กำลังเตรียมความพร้อม...</p>
+              </div>
+            </div>
+          }>
+            <Analyzer />
+          </Suspense>
         </div>
       </main>
 
